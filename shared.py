@@ -1,8 +1,12 @@
 
 
-def intCode(inp, debug = 0):
+def intCode(inp, debug = 0, input3=[]):
+    inpInd = 0
     list = inp.copy()
     index = 0
+
+    output4 = []
+
     while(list[index]!=99):
         #print("block {}:".format(int(index/4+1)))
         if debug > 1:
@@ -49,8 +53,12 @@ def intCode(inp, debug = 0):
             list[list[index+3]] = product
             index += 4
         elif(classifier[0] == 3):
-            inp = int(input("Enter input: "))
-            list[list[index+1]] = inp
+            try:
+                codeInp = input3[inpInd]
+                inpInd+=1
+            except:
+                codeInp = int(input("Enter input: "))
+            list[list[index+1]] = codeInp
             index += 2
         elif(classifier[0] == 4):
             output = -1
@@ -58,7 +66,8 @@ def intCode(inp, debug = 0):
                 output = list[index+1]
             else:
                 output = list[list[index+1]]
-            print("Output: {}".format(output))
+            output4.append(output)
+            #print("Output: {}".format(output))
             if(output!=0 and debug>1):
                 print("    {}, {}, {}, {}".format(list[index],list[index+1],list[index+2],list[index+3]))
             index += 2
@@ -128,4 +137,4 @@ def intCode(inp, debug = 0):
             else:
                 list[param[2]]=0
             index += 4
-    return list
+    return output4
