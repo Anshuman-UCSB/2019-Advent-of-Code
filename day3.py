@@ -26,16 +26,42 @@ for i in input.split("\n"):
 wires.pop(0)
 wires.pop(2)
 
-RULD = [0,0,0,0]
-for i in wires:
-    for move in i:
-        if move[0] == "R":
-            RULD[0] += int(move[1:])
-        if move[0] == "U":
-            RULD[1] += int(move[1:])
-        if move[0] == "L":
-            RULD[2] += int(move[1:])
-        if move[0] == "D":
-            RULD[3] += int(move[1:])
+wire_path = [[],[]]
 
+RULD = [0,0,0,0]
+for i in range(2):
+    x = 0
+    y = 0
+    for move in wires[i]:
+        magnitude = int(move[1:])
+        for k in range(magnitude):
+            if move[0] == "R":
+                x += 1
+            if move[0] == "U":
+                y += 1
+            if move[0] == "L":
+                x -= 1
+            if move[0] == "D":
+                y -= 1
+            wire_path[i].append((x,y))
+
+output = []
+
+wire_path[0] = set(wire_path[0])
+wire_path[1] = set(wire_path[1])
+
+for a in wire_path[0]:
+    if a in wire_path[1]:
+        output.append(a)
+        #print("{} is a intersection!".format(a))
+
+distances = []
+
+smallest = output[0]
+for a in output:
+    if(abs(a[0])+abs(a[1]) < abs(smallest[0]) + abs(smallest[1])):
+        smallest = a
+print(smallest)
+
+print(str(abs(smallest[0])+abs(smallest[1])))
 #max size implementation
