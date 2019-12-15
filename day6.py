@@ -5,6 +5,8 @@ with open("day6.txt") as file:
 for i in range(len(orbits)):
     orbits[i] = orbits[i].split(")")
 
+
+
 class Planet:
 
     def __init__(self, name, parent = 0):
@@ -39,6 +41,14 @@ def getPlanetInList(list, name):
             return planet
     return 0
 
+def getParentTree(list, head):
+    tree = []
+    temp = head
+    while(temp.name!="COM"):
+        tree.append(temp.name)
+        temp = temp.parent
+    tree.append(temp.name)
+    return tree
 
 planets = [Planet("COM")]
 
@@ -58,6 +68,21 @@ for orbit in orbits:
     parent.children.append(child)
     child.parent = parent
 
+tree1 = (getParentTree(planets, getPlanetInList(planets, "YOU")))
+tree2 = (getParentTree(planets, getPlanetInList(planets, "SAN")))
+shared_node = 0
+for a in tree1:
+    if a in tree2:
+        shared_node = a
+        print("Central node of {}".format(a))
+        break
+
+print(tree1)
+print(tree2)
+print(tree1.index(shared_node)+tree2.index(shared_node)-2)
+
+
+exit() #part 1
 #print(getPlanetInList(planets,"COM").children[0])
 sum = 0
 for a in planets:
