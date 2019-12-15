@@ -28,7 +28,7 @@ wires.pop(2)
 
 wire_path = [[],[]]
 
-RULD = [0,0,0,0]
+
 for i in range(2):
     x = 0
     y = 0
@@ -46,17 +46,29 @@ for i in range(2):
             wire_path[i].append((x,y))
 
 output = []
+set_path = [0,0]
 
-wire_path[0] = set(wire_path[0])
-wire_path[1] = set(wire_path[1])
+set_path[0] = set(wire_path[0])
+set_path[1] = set(wire_path[1])
 
-for a in wire_path[0]:
-    if a in wire_path[1]:
+for a in set_path[0]:
+    if a in set_path[1]:
         output.append(a)
         #print("{} is a intersection!".format(a))
 
-distances = []
+print(output)
 
+#steps = wire_path[0].index(output[0]) +  wire_path[1].index(output[0])
+
+steps = []
+for i in output:
+    steps.append(2 + wire_path[0].index(i) +  wire_path[1].index(i))
+
+print(min(steps))
+
+
+exit()
+# smallest is below
 smallest = output[0]
 for a in output:
     if(abs(a[0])+abs(a[1]) < abs(smallest[0]) + abs(smallest[1])):
