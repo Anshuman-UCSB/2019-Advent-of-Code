@@ -138,13 +138,13 @@ def intCode(list, debug = 0, input3=[], index = 0):
 
 class processor:
 
-    def __init__(self, code, pointer = 0, inp = [], out = []):
-        self.code = code
+    def __init__(self, code, pointer = 0):
+        self.code = code.copy()
         self.pointer = pointer
 
-        self.inputs = inp
+        self.inputs = []
         self.inputsInd = 0
-        self.outputs = out
+        self.outputs = []
         self.outputsInd = 0
 
     def __str__(self):
@@ -234,6 +234,7 @@ class processor:
             try:
                 inp = self.inputs[self.inputsInd]
                 self.inputsInd += 1
+                self.code[params[0]] = inp
             except:
                 inp = int(input("Enter an input: "))
                 self.code[params[0]] = inp
