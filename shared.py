@@ -1,9 +1,6 @@
 
 
-def intCode(inp, debug = 0, input3=[]):
-    inpInd = 0
-    list = inp.copy()
-    index = 0
+def intCode(list, debug = 0, input3=[], index = 0):
 
     output4 = []
 
@@ -138,3 +135,216 @@ def intCode(inp, debug = 0, input3=[]):
                 list[param[2]]=0
             index += 4
     return output4
+
+class processor:
+
+    def __init__(self, code, pointer = 0, inp = [], out = []):
+        self.code = code
+        self.pointer = pointer
+
+        self.inputs = inp
+        self.inputsInd = 0
+        self.outputs = out
+        self.outputsInd = 0
+
+    def __str__(self):
+        return """
+        Processor with following info:
+                code: {}
+                pointer: {}
+                inputs: {}
+                outputs: {}
+                """.format(self.code, self.pointer, self.inputs,self.outputs)
+
+    def isFinished(self):
+        return "Fin" in self.outputs
+
+    def process(self, prints = False):
+
+        opcode = self.code[self.pointer]
+
+        instructions = []
+
+        instructions.append(opcode%100)
+        opcode = int(opcode/100)
+        for i in range(4):
+            instructions.append(opcode%10)
+            opcode = int(opcode/10)
+
+        #instructions are opcode
+        if prints:
+            print(" > Using instructions {}".format(instructions))
+
+        if(instructions[0] == 1):
+            params = []
+            sizeOfInstructions = 4
+
+            for i in range(1,sizeOfInstructions-1):
+                if(instructions[i] == 1):
+                    params.append(self.code[self.pointer+i])
+                elif(instructions[i] == 0):
+                    params.append(self.code[self.code[self.pointer+i]])
+
+            params.append(self.code[self.pointer+sizeOfInstructions-1])
+
+            #CHANGE THIS CODE HERE#
+            sum = params[0]+params[1]
+            self.code[params[2]] = sum
+            if prints:
+                print(" + adding {} and {} and placing it at {}".format(params[0],params[1], params[2]))
+                print(" () Params are {}".format(params))
+            self.pointer += sizeOfInstructions
+            #CODE CHANGING ENDS#
+
+        elif(instructions[0] == 2):
+            params = []
+            sizeOfInstructions = 4
+
+            for i in range(1,sizeOfInstructions-1):
+                if(instructions[i] == 1):
+                    params.append(self.code[self.pointer+i])
+                elif(instructions[i] == 0):
+                    params.append(self.code[self.code[self.pointer+i]])
+
+            params.append(self.code[self.pointer+sizeOfInstructions-1])
+
+            #CHANGE THIS CODE HERE#
+            product = params[0]*params[1]
+            self.code[params[2]] = product
+            if prints:
+                print(" * Multiplying {} and {} and placing it at {}".format(params[0],params[1], params[2]))
+                print(" () Params are {}".format(params))
+            self.pointer += sizeOfInstructions
+            #CODE CHANGING ENDS#
+
+        elif(instructions[0] == 3):
+            params = []
+            sizeOfInstructions = 2
+
+            for i in range(1,sizeOfInstructions-1):
+                if(instructions[i] == 1):
+                    params.append(self.code[self.pointer+i])
+                elif(instructions[i] == 0):
+                    params.append(self.code[self.code[self.pointer+i]])
+
+            params.append(self.code[self.pointer+sizeOfInstructions-1])
+
+            #CHANGE THIS CODE HERE#
+            inp  = -1
+            try:
+                inp = self.inputs[self.inputsInd]
+                self.inputsInd += 1
+            except:
+                inp = int(input("Enter an input: "))
+                self.code[params[0]] = inp
+            if prints:
+                print(" ^ Taking input {} and placing it at {}".format(inp, params[0]))
+                print(" () Params are {}".format(params))
+            self.pointer += sizeOfInstructions
+            #CODE CHANGING ENDS#
+
+        elif(instructions[0] == 4):
+            params = []
+            sizeOfInstructions = 2
+
+            for i in range(1,sizeOfInstructions):
+                if(instructions[i] == 1):
+                    params.append(self.code[self.pointer+i])
+                elif(instructions[i] == 0):
+                    params.append(self.code[self.code[self.pointer+i]])
+
+
+            #CHANGE THIS CODE HERE#
+            out = params[0]
+            if prints:
+                print(" v Giving output {}.".format(out))
+                print(" () Params are {}".format(params))
+            self.outputs.append(out)
+            self.pointer += sizeOfInstructions
+            #CODE CHANGING ENDS#
+
+        elif(instructions[0] == 5):
+            params = []
+            sizeOfInstructions = 3
+
+            for i in range(1,sizeOfInstructions):
+                if(instructions[i] == 1):
+                    params.append(self.code[self.pointer+i])
+                elif(instructions[i] == 0):
+                    params.append(self.code[self.code[self.pointer+i]])
+
+            #CHANGE THIS CODE HERE#
+            if params[0] == 0:
+                self.pointer += sizeOfInstructions
+            else:
+                self.pointer = params[1]
+            if prints:
+                print(" J Jumping to {}.".format(params[1]))
+                print(" () Params are {}".format(params))
+
+            #CODE CHANGING ENDS#
+
+        elif(instructions[0] == 6):
+            params = []
+            sizeOfInstructions = 3
+
+            for i in range(1,sizeOfInstructions):
+                if(instructions[i] == 1):
+                    params.append(self.code[self.pointer+i])
+                elif(instructions[i] == 0):
+                    params.append(self.code[self.code[self.pointer+i]])
+
+            #CHANGE THIS CODE HERE#
+            if params[0] != 0:
+                self.pointer += sizeOfInstructions
+            else:
+                self.pointer = params[1]
+
+            #CODE CHANGING ENDS#
+
+        elif(instructions[0] == 7):
+            params = []
+            sizeOfInstructions = 4
+
+            for i in range(1,sizeOfInstructions-1):
+                if(instructions[i] == 1):
+                    params.append(self.code[self.pointer+i])
+                elif(instructions[i] == 0):
+                    params.append(self.code[self.code[self.pointer+i]])
+            params.append(self.code[self.pointer+sizeOfInstructions-1])
+
+
+            #CHANGE THIS CODE HERE#
+            if params[0] < params[1]:
+                self.code[params[2]] = 1
+            else:
+                self.code[params[2]] = 0
+
+            self.pointer += sizeOfInstructions
+            #CODE CHANGING ENDS#
+
+        elif(instructions[0] == 8):
+            params = []
+            sizeOfInstructions = 4
+
+            for i in range(1,sizeOfInstructions-1):
+                if(instructions[i] == 1):
+                    params.append(self.code[self.pointer+i])
+                elif(instructions[i] == 0):
+                    params.append(self.code[self.code[self.pointer+i]])
+            params.append(self.code[self.pointer+sizeOfInstructions-1])
+
+            #CHANGE THIS CODE HERE#
+            if params[0] == params[1]:
+                self.code[params[2]] = 1
+            else:
+                self.code[params[2]] = 0
+
+            self.pointer += sizeOfInstructions
+            #CODE CHANGING ENDS#
+
+
+        elif(instructions[0] == 99):
+            if prints:
+                print(" > Reached end, stopping now")
+            self.outputs.append("Fin")
