@@ -138,7 +138,9 @@ def intCode(list, debug = 0, input3=[], index = 0):
 
 class processor:
 
-    def __init__(self, code, pointer = 0):
+    def __init__(self, ident, code, pointer = 0):
+
+        self.identifier = ident
         self.code = code.copy()
         self.pointer = pointer
 
@@ -149,17 +151,17 @@ class processor:
 
     def __str__(self):
         return """
-        Processor with following info:
+        Processor {}:
                 code: {}
                 pointer: {}
                 inputs: {}
                 outputs: {}
-                """.format(self.code, self.pointer, self.inputs,self.outputs)
+                """.format(self.identifier, self.code, self.pointer, self.inputs,self.outputs)
 
     def isFinished(self):
         return "Fin" in self.outputs
 
-    def process(self, prints = False):
+    def process(self, prints = False, manual = True):
 
         opcode = self.code[self.pointer]
 
@@ -236,6 +238,8 @@ class processor:
                 self.inputsInd += 1
                 self.code[params[0]] = inp
             except:
+                if not manual:
+                    return "Waiting on input"
                 inp = int(input("Enter an input: "))
                 self.code[params[0]] = inp
             if prints:
@@ -262,6 +266,7 @@ class processor:
                 print(" () Params are {}".format(params))
             self.outputs.append(out)
             self.pointer += sizeOfInstructions
+            return out
             #CODE CHANGING ENDS#
 
         elif(instructions[0] == 5):
@@ -349,3 +354,5 @@ class processor:
             if prints:
                 print(" > Reached end, stopping now")
             self.outputs.append("Fin")
+
+        return "N/A"
