@@ -143,6 +143,7 @@ class processor:
         self.identifier = ident
         self.code = code.copy()
         self.pointer = pointer
+        self.relPointer = 0
 
         self.inputs = []
         self.inputsInd = 0
@@ -160,6 +161,10 @@ class processor:
 
     def isFinished(self):
         return "Fin" in self.outputs
+
+    def expand(self, count):
+        for i in range(count):
+            self.code.append(0)
 
     def process(self, prints = False, manual = True):
 
@@ -186,8 +191,13 @@ class processor:
                     params.append(self.code[self.pointer+i])
                 elif(instructions[i] == 0):
                     params.append(self.code[self.code[self.pointer+i]])
+                elif(instructions[i] == 2):
+                    params.append(self.code[self.relPointer+self.code[self.pointer+i]])
 
-            params.append(self.code[self.pointer+sizeOfInstructions-1])
+            if(instructions[sizeOfInstructions-1] == 0):
+                params.append(self.code[self.pointer+sizeOfInstructions-1])
+            elif(instructions[sizeOfInstructions-1] == 2):
+                params.append(self.relPointer + self.code[self.pointer+sizeOfInstructions-1])
 
             #CHANGE THIS CODE HERE#
             sum = params[0]+params[1]
@@ -207,12 +217,18 @@ class processor:
                     params.append(self.code[self.pointer+i])
                 elif(instructions[i] == 0):
                     params.append(self.code[self.code[self.pointer+i]])
+                elif(instructions[i] == 2):
+                    params.append(self.code[self.relPointer+self.code[self.pointer+i]])
 
-            params.append(self.code[self.pointer+sizeOfInstructions-1])
+            if(instructions[sizeOfInstructions-1] == 0):
+                params.append(self.code[self.pointer+sizeOfInstructions-1])
+            elif(instructions[sizeOfInstructions-1] == 2):
+                params.append(self.relPointer + self.code[self.pointer+sizeOfInstructions-1])
 
             #CHANGE THIS CODE HERE#
             product = params[0]*params[1]
-            self.code[params[2]] = product
+            print("         {}".format(params))
+            self.code[params[-1]] = product
             if prints:
                 print(" * Multiplying {} and {} and placing it at {}".format(params[0],params[1], params[2]))
                 print(" () Params are {}".format(params))
@@ -228,8 +244,12 @@ class processor:
                     params.append(self.code[self.pointer+i])
                 elif(instructions[i] == 0):
                     params.append(self.code[self.code[self.pointer+i]])
-
-            params.append(self.code[self.pointer+sizeOfInstructions-1])
+                elif(instructions[i] == 2):
+                    params.append(self.code[self.relPointer+self.code[self.pointer+i]])
+            if(instructions[sizeOfInstructions-1] == 0):
+                params.append(self.code[self.pointer+sizeOfInstructions-1])
+            elif(instructions[sizeOfInstructions-1] == 2):
+                params.append(self.relPointer + self.code[self.pointer+sizeOfInstructions-1])
 
             #CHANGE THIS CODE HERE#
             inp  = -1
@@ -257,6 +277,8 @@ class processor:
                     params.append(self.code[self.pointer+i])
                 elif(instructions[i] == 0):
                     params.append(self.code[self.code[self.pointer+i]])
+                elif(instructions[i] == 2):
+                    params.append(self.code[self.relPointer+self.code[self.pointer+i]])
 
 
             #CHANGE THIS CODE HERE#
@@ -278,6 +300,8 @@ class processor:
                     params.append(self.code[self.pointer+i])
                 elif(instructions[i] == 0):
                     params.append(self.code[self.code[self.pointer+i]])
+                elif(instructions[i] == 2):
+                    params.append(self.code[self.relPointer+self.code[self.pointer+i]])
 
             #CHANGE THIS CODE HERE#
             if params[0] == 0:
@@ -299,6 +323,8 @@ class processor:
                     params.append(self.code[self.pointer+i])
                 elif(instructions[i] == 0):
                     params.append(self.code[self.code[self.pointer+i]])
+                elif(instructions[i] == 2):
+                    params.append(self.code[self.relPointer+self.code[self.pointer+i]])
 
             #CHANGE THIS CODE HERE#
             if params[0] != 0:
@@ -317,7 +343,12 @@ class processor:
                     params.append(self.code[self.pointer+i])
                 elif(instructions[i] == 0):
                     params.append(self.code[self.code[self.pointer+i]])
-            params.append(self.code[self.pointer+sizeOfInstructions-1])
+                elif(instructions[i] == 2):
+                    params.append(self.code[self.relPointer+self.code[self.pointer+i]])
+            if(instructions[sizeOfInstructions-1] == 0):
+                params.append(self.code[self.pointer+sizeOfInstructions-1])
+            elif(instructions[sizeOfInstructions-1] == 2):
+                params.append(self.relPointer + self.code[self.pointer+sizeOfInstructions-1])
 
 
             #CHANGE THIS CODE HERE#
@@ -338,7 +369,12 @@ class processor:
                     params.append(self.code[self.pointer+i])
                 elif(instructions[i] == 0):
                     params.append(self.code[self.code[self.pointer+i]])
-            params.append(self.code[self.pointer+sizeOfInstructions-1])
+                elif(instructions[i] == 2):
+                    params.append(self.code[self.relPointer+self.code[self.pointer+i]])
+            if(instructions[sizeOfInstructions-1] == 0):
+                params.append(self.code[self.pointer+sizeOfInstructions-1])
+            elif(instructions[sizeOfInstructions-1] == 2):
+                params.append(self.relPointer + self.code[self.pointer+sizeOfInstructions-1])
 
             #CHANGE THIS CODE HERE#
             if params[0] == params[1]:
@@ -347,6 +383,26 @@ class processor:
                 self.code[params[2]] = 0
 
             self.pointer += sizeOfInstructions
+            #CODE CHANGING ENDS#
+
+        elif(instructions[0] == 9):
+            params = []
+            sizeOfInstructions = 2
+
+            for i in range(1,sizeOfInstructions):
+                if(instructions[i] == 1):
+                    params.append(self.code[self.pointer+i])
+                elif(instructions[i] == 0):
+                    params.append(self.code[self.code[self.pointer+i]])
+                elif(instructions[i] == 2):
+                    params.append(self.code[self.relPointer+self.code[self.pointer+i]])
+
+            #CHANGE THIS CODE HERE#
+            self.relPointer+=params[0]
+            self.pointer += sizeOfInstructions
+            if prints:
+                print(" R Changing relative pointer by {}, now {}.".format(params[0],self.relPointer))
+                print(" () Params are {}".format(params))
             #CODE CHANGING ENDS#
 
 
