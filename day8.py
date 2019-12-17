@@ -71,6 +71,27 @@ print()
 for i in layers:
     print(i)
 
+outputLayer = Layer(25,6)
+for i in range(25):
+    for j in range(6):
+        outputLayer.grid[j][i] = 2
+        for layer in layers:
+            if layer.grid[j][i] < 2:
+                outputLayer.grid[j][i] = layer.grid[j][i]
+                break
+
+print("Message: ")
+print(outputLayer)
+for row in outputLayer.grid:
+    for val in row:
+        if val == 1:
+            print("#", end = "")
+        else:
+            print(" ", end = "")
+    print()
+
+#Part 1
+exit()
 count0 = []
 for i in layers:
     count0.append(i.count(0))
