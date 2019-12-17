@@ -7,7 +7,24 @@ prc.expand(1000)
 
 print(prc)
 
+animation = [
+    " [=     ]",
+    " [ =    ]",
+    " [  =   ]",
+    " [   =  ]",
+    " [    = ]",
+    " [     =]",
+    " [    = ]",
+    " [   =  ]",
+    " [  =   ]",
+    " [ =    ]",
+]
+idx = 0
+
 print()
 while not prc.isFinished():
-    prc.process(manual = True, prints = True)
+    prc.process(manual = True, prints = False)
+    print(animation[idx % len(animation)] , end="\r")
+    idx += 1
+
 print(prc)

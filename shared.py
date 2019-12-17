@@ -227,7 +227,7 @@ class processor:
 
             #CHANGE THIS CODE HERE#
             product = params[0]*params[1]
-            print("         {}".format(params))
+            #print("         {}".format(params))
             self.code[params[-1]] = product
             if prints:
                 print(" * Multiplying {} and {} and placing it at {}".format(params[0],params[1], params[2]))
