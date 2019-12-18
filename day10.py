@@ -1,5 +1,12 @@
 import math
 
+import numpy as np
+
+def cart2pol(x, y):
+    rho = np.sqrt(x**2 + y**2)
+    phi = np.arctan2(y, x)
+    return(rho, phi)
+
 space = []
 
 with open("day10.txt") as file:
@@ -131,10 +138,13 @@ for row in space.modGrid:
 print(values)
 print("Max: "+str(max(values)))
 
+for i in range(len(space.modGrid)):
+    for r in range(len(space.modGrid[0])):
+        if space.modGrid[i][r] == max(values):
+            print("{}, {}".format(i,r))
 
 
-
-
+#(22, 28)
 
 
 
