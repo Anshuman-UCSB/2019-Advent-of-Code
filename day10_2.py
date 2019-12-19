@@ -1,197 +1,117 @@
-import math
-
 import numpy as np
+import copy
+import math
 
 def cart2pol(x, y):
     rho = np.sqrt(x**2 + y**2)
     phi = np.arctan2(y, x)
     phi = math.degrees(phi)
-    phi += 90
     while phi<0:
         phi+=360
-    while phi>360:
-        phi-=360
-    return (rho, phi, x, y)
+    return[rho, phi%360]
 
-space = []
-with open("day10.txt") as file:
-    data = file.read()
+class space:
 
-class Space:
+    def __init__(self):
+        with open("day10.txt") as file:
+            data = file.read()
+        data = data.splitlines()
+        self.grid = []
+        for row in data:
+            self.grid.append(list(row))
 
-    def __init__(self, data):
-        self.grid = data.splitlines()
-        for i in range(len(self.grid)):
-            self.grid[i] = list(self.grid[i])
+        self.modGrid = copy.deepcopy(self.grid)
 
-        self.xMax = len(self.grid[0])
-        self.yMax = len(self.grid)
-        self.modGrid = []
-        for row in self.grid:
-            self.modGrid.append(row.copy())
         self.asteroids = []
+        for y in range(len(self.grid)):
+            for x in range(len(self.grid[0])):
+                if self.grid[y][x] == "#":
+                    self.asteroids.append(asteroid(x,y))
 
-        for x in range(self.xMax):
-            for y in range(self.yMax):
-                if self.grid[y][x] != ".":
-                    self.asteroids.append((x,y))
-                    #print("{}, {}".format(x, y))
+        for astr in self.asteroids:
+            print(self.getVisible(astr))
+            print(astr)
 
-    def printGrid(self):
-        print()
+
+    def __str__(self):
+        print("    Grid: ")
         for row in self.grid:
-            for char in row:
-                print (char, end = "")
+            for val in row:
+                print(val,end = "")
             print()
-        print()
-
-    def printMod(self):
-        print()
+        print("    Mod: ")
         for row in self.modGrid:
-            for char in row:
-                print (char, end = "")
+            for val in row:
+                print(val,end = "")
             print()
         print()
+        print("    Asteroids: ")
+        for asteroid in self.asteroids:
+            print(asteroid)
+        return("")
 
-    def distance(self, a1, a2):
-        return (a2[0]-a1[0],a2[1]-a1[1])
+    def getVisible(self, asteroid):
+        cpy = copy.deepcopy(self.asteroids)
+        for astr in cpy:
+            astr.setRel(asteroid)
+        sortAstr(cpy)
+        #for astr in copy:
+        #    print(astr.relPolar)
 
-    def slope(self, a1, a2):
-        x = a2[0] - a1[0]
-        y = a1[1] - a2[1]
+        angles = []
+        for astr in cpy:
+            if not astr.relPolar[1] in angles:
+                angles.append(astr.relPolar[1])
+        #print(angles)
+        x = asteroid.x
+        y = asteroid.y
+        self.modGrid[y][x] = len(angles)
+        print("Angles for {}: {}".format(asteroid, angles))
+        return len(angles)
 
-        if(x<0):
-            sign = -1
-        elif(x>0):
-            sign = 1
-        elif(y<0):
-            sign = -1
-        else:
-            sign = 1
+class asteroid:
 
-        try:
-            slope = y/x
-        except:
-            slope = "INF"
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.xy = [x,y]
 
-        dist = abs(x) + abs(y)
+        self.polar = cart2pol(x,y)
+        self.r = self.polar[0]
+        self.phi = self.polar[1]
 
-        ret = [x, y, slope, sign, dist]
+    def setRel(self, asteroid):
+        self.relX = self.x-asteroid.x
+        self.relY = self.y-asteroid.y
 
-        return ret
+        self.relPolar = cart2pol(self.relX, self.relY)
 
-space = Space(data)
-space.printGrid()
+    def __str__(self):
+        return " > Cartesian: ({}, {}) <> Polar: ({}, {})".format(self.x,self.y,self.r,self.phi)
 
-center = (22,28) #actual
-debug = (8,4)
+def compareAstr(a1, a2):
+    #print("comparing {} and {}".format(a1,a2))
+    ang1 = a1.relPolar[1]
+    ang2 = a2.relPolar[1]
+    ang1+=90
+    ang2+=90
+    ang1 %= 360
+    ang2 %= 360
+    return ang1 > ang2
 
-polar = []
-
-ang = 0
-
-
-def compare(c1, c2):
-    if c1[1] < c2[1]:
-        return True
-    elif c1[1] == c2[1]:
-        if c1[0] > c2[0]:
-            return False
-        else:
-            return True
-    else:
-        return False
-
-def sortList(list):
+def sortAstr(list):
     sorted = False
+
     while not sorted:
         sorted = True
         for i in range(len(list)-1):
-            if not compare(list[i],list[i+1]):
+            if compareAstr(list[i], list[i+1]):
                 temp = list[i]
                 list[i] = list[i+1]
                 list[i+1] = temp
                 sorted = False
 
-for asteroid in space.asteroids:
-    xy = space.distance(debug, asteroid)
-    polar.append(cart2pol(xy[0],xy[1]))
 
-#for i in range(len(polar)):
-    #print(math.degrees(polar[i][1]))
-
-#polar.remove((0,90,0,0))
-
-angles = []
-Los = []
-
-print("\nPresort:")
-for a in polar:
-    print(" > "+str(a))
-
-sortList(polar)
-print("\nPostsort:")
-for a in polar:
-    print(" > "+str(a))
-
-print()
-
-for elem in polar:
-    if not elem[1] in angles:
-        angles.append(elem[1])
-
-
-for angle in angles:
-    smallest = (9999,angle)
-    for elem in polar:
-        if elem[1] == angle and elem[0]<smallest[0] and elem[0] > 0:
-            smallest = elem
-    Los.append(smallest)
-
-rays = []
-for angle in angles:
-    rays.append([])
-
-for elem in polar:
-    rays[angles.index(elem[1])].append(elem)
-
-
-print("\nRays:")
-for a in rays:
-    print(" > "+str(a))
-print()
-print("\nAngles:")
-print(angles)
-print()
-
-print("LOS:")
-for a in Los:
-    print(" > "+str(a))
-print()
-
-visual = "123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-empty = False
-ind = 0
-i = 0
-
-def nestedEmpty(list):
-    for row in list:
-        if len(row)>0:
-            return False
-    return True
-
-while not nestedEmpty(rays):
-    try:
-        val = rays[ind%len(rays)].pop(0)
-        space.modGrid[val[3]+2][2+val[2]]=visual[i]
-        i+= 1
-        print("{}: {}".format(visual[i],val))
-    except:
-        pass
-    ind+=1
-
-print()
-print("Mod grid:")
-space.printMod()
-space.printGrid()
+spc = space()
+print(spc)
+spc.getVisible(asteroid(3,4))
