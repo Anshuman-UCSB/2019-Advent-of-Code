@@ -28,10 +28,19 @@ class space:
                 if self.grid[y][x] == "#":
                     self.asteroids.append(asteroid(x,y))
 
+        for astr in self.asteroids:
+            print(self.getVisible(astr))
+            print(astr)
+
 
     def __str__(self):
         print("    Grid: ")
         for row in self.grid:
+            for val in row:
+                print(val,end = "")
+            print()
+        print("    Mod: ")
+        for row in self.modGrid:
             for val in row:
                 print(val,end = "")
             print()
@@ -42,17 +51,23 @@ class space:
         return("")
 
     def getVisible(self, asteroid):
-        for astr in self.asteroids:
+        cpy = copy.deepcopy(self.asteroids)
+        for astr in cpy:
             astr.setRel(asteroid)
-        sortAstr(self.asteroids)
-        for astr in self.asteroids:
-            print(astr.relPolar)
+        sortAstr(cpy)
+        #for astr in copy:
+        #    print(astr.relPolar)
 
         angles = []
-        for astr in self.asteroids:
+        for astr in cpy:
             if not astr.relPolar[1] in angles:
                 angles.append(astr.relPolar[1])
-        print(angles)
+        #print(angles)
+        x = asteroid.x
+        y = asteroid.y
+        self.modGrid[y][x] = len(angles)
+        print("Angles for {}: {}".format(asteroid, angles))
+        return len(angles)
 
 class asteroid:
 
@@ -75,12 +90,14 @@ class asteroid:
         return " > Cartesian: ({}, {}) <> Polar: ({}, {})".format(self.x,self.y,self.r,self.phi)
 
 def compareAstr(a1, a2):
-    print("comparing {} and {}".format(a1.relPolar,a2.relPolar))
-    if a1.relPolar[1] >= 270 and a2.relPolar[1] <270:
-        return True
-    if a1.relPolar[1] <270 and a1.relPolar[1] >= 270:
-        return False
-    return a1.relPolar[1]<a2.relPolar[1]
+    #print("comparing {} and {}".format(a1,a2))
+    ang1 = a1.relPolar[1]
+    ang2 = a2.relPolar[1]
+    ang1+=90
+    ang2+=90
+    ang1 %= 360
+    ang2 %= 360
+    return ang1 > ang2
 
 def sortAstr(list):
     sorted = False
@@ -97,4 +114,4 @@ def sortAstr(list):
 
 spc = space()
 print(spc)
-spc.getVisible(asteroid(1,1))
+spc.getVisible(asteroid(3,4))
