@@ -150,7 +150,7 @@ prc = processor(code)
 prc.pad(1500)
 
 i = 0
-skipFrame = 500
+skipFrame = 1
 
 while not prc.finished:
     i+=1
