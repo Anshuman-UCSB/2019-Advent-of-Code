@@ -11,20 +11,23 @@ class processor:
         self.finished = False
 
     def __str__(self):
-        print("\n     ---")
-        print("Code: ")
-        print(self.code)
-        print()
-        print("Inputs:")
-        print(self.inputs)
-        print()
-        print("Outputs:")
-        print(self.outputs)
-        print()
-        print("Relative pointer:")
-        print(self.relPointer)
-        print()
-        print("Currently at:")
+        output = ""
+        output += "\n     ---" + "\n"
+        output += "Code: " + "\n"
+        output += str(self.code[0:10]) + "..." + "\n"
+        output += "\n"
+        output += "Inputs:" + "\n"
+        output += str(self.inputs[0:10]) + "->\n"
+        output += "\n"
+        output += "Outputs:" + "\n"
+        output += str(self.outputs) + "          \n"
+        output += "\n"
+        output += "Relative pointer:" + "\n"
+        output += str(self.relPointer) + "\n"
+        output += "\n"
+        output += "Currently at:" + "\n"
+        output += "Pointer >" + str(self.pointer) + "\n"
+        return output
         try:
             print(self.code[self.pointer:self.pointer+4])
         except:
@@ -104,7 +107,7 @@ class processor:
             self.outputs.append(command[1])
             self.pointer += 2
 
-            print(command)
+            #print(command)
             #input(self.outputs)
 
         elif OPc == 5:
