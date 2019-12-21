@@ -84,6 +84,18 @@ class Moon:
         for i in range(3):
             self.pos[i] += self.vel[i]
 
+    def updateGrav1d(self, moons, dimension):
+        #dimension 0:x, 1:y, 2:z
+        for moon in moons:
+            if self.pos[dimension] < moon.pos[dimension]:
+                self.vel[dimension] +=1
+            elif self.pos[dimension] > moon.pos[dimension]:
+                self.vel[dimension] -= 1
+
+    def updatePos1d(self, moons, dimension):
+        for moon in moons:
+            self.pos[dimension] += self.vel[dimension]
+
 
 moons = []
 moons.append(Moon(1, 15, -2, -6, colorInp = Fore.RED))
@@ -109,6 +121,12 @@ def updateEach():
     for moon in moons:
         moon.updatePosition()
     #time.sleep(0.05)
+
+def update1d(dimension):
+    for moon in moons:
+        moon.updateGrav1d(moons, dimension)
+    for moon in moons:
+        moon.updatePosition()
 
 def getEnergy(moons):
     energy = 0
@@ -158,21 +176,18 @@ epoch = 0
 printMoons()
 printGrid()
 
-values = "NULL"
 
 ind = 0
-skipFrames = 100000
+skipFrames = 1000
 
 while True:
 #    time.sleep(0.15)
 
-    updateEach()
 
     values = ""
     for moon in moons:
         values += str(moon.pos)
         values += str(moon.vel)
-
 
 
     if values in states:
@@ -183,8 +198,30 @@ while True:
     if ind%skipFrames == 0:
         moveCursor(0,0)
         printMoons()
+        #input()
     ind+=1
     epoch += 1
+    update1d(1)
 
 print("\nFinished\n")
 printMoons()
+
+
+#161428 on x
+#167624 on y
+#193052 on z
+
+epochVal = 0
+
+while True:
+    moveCursor(50,5)
+    print(epochVal)
+    epochVal+=161428
+    if epochVal % 161428 == 0:
+        if epochVal % 167624 == 0:
+            if epochVal % 193052 == 0:
+                break
+print(epochVal)
+
+#its not 60135 lmao
+# 326,489,627,728,984
