@@ -93,8 +93,8 @@ class processor:
                 location = self.code[self.pointer+1]
 
             try:
-                self.code[location] = self.inputs[self.inputPtr]
-                self.inputPtr += 1
+                self.code[location] = self.inputs.pop(0)
+                self.inputPtr += 0
                 self.pointer += 2
             except:
                 if manual == True:
