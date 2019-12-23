@@ -103,7 +103,7 @@ paddleX = -1
 prc.inputs.append(0)
 
 ind = 0
-skipFrames = 150
+skipFrames = 2
 
 while not prc.finished:
     prc.process(manual = True)
@@ -120,9 +120,10 @@ while not prc.finished:
     if paddleX>ballX:
         prc.inputs[0] = -1
 
+    
 
     if len(prc.outputs) >= 3:
-        if ind%skipFrames == 0:
+        if ind%skipFrames == 0 and getBallx() != -1 and getPaddlex() != -1:
             printGrid()
         ind+=1
         draw = []
