@@ -101,6 +101,9 @@ class processor:
                     inp = input(" > Enter an input\n > ")
                     self.code[location] = int(inp)
                     self.pointer += 2
+                else:
+                    
+                    return "Waiting on input"
 
         elif OPc == 4:
 

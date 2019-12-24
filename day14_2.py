@@ -101,28 +101,33 @@ print("Quantities:",quantity)
 print()
 
 countsOF = []
-make = 100
+make = 1000000
 
-ore_count = 1_000_000_000
+ore_count = 1_000_000_000_000
 
-makeMultiple("FUEL",2168)
-while(hasNegative()):
-    makeNegatives()
-"""
+#makeMultiple("FUEL",2168)
+#while(hasNegative()):
+    #makeNegatives()
+
+ind = 0
+skipFrame = 1
+
 while quantity["ORE"]>(0-ore_count):
     makeMultiple("FUEL",make)
-    make -= 3
+    make = int(make/1.15)
     if make<1:
         make = 1
     while(hasNegative()):
 
         makeNegatives()
     countsOF.append((ore_count+quantity["ORE"],quantity["FUEL"]))
-    print(countsOF[len(countsOF)-1])
-"""
+    if ind%skipFrame == 0:
+        print(countsOF[len(countsOF)-1])
+    ind+= 1
 
 print()
 print("Quantities:",quantity)
 print(countsOF)
 
-"2168 is answer"
+"2168 is too low"
+"2169 not it either?"
